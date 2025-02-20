@@ -35,40 +35,44 @@ conversion = {"M": 1000000,
 # test function by updating damages
 
 
-def updated_damages(update):
+def convert_damages(damages):
     damages_list = []
-    name_list = []
-    for damage in update:
-
-        if "M" in damage:
-
-            price = damage.split("M")
-            damages_list.append(float(price[0]) * 1000000)
-
-        elif "B" in damage:
-            price = damage.split("B")
-            damages_list.append(float(price[0]) * 1000000000)
+    for damag in damages:
+        if "M" in damag:
+            try:
+                price = damag.split("M")
+                damages_list.append(int(price[0]) * 1000000)
+            except ValueError:
+                damages_list.append(0)  # or handle the error as needed
+        elif "B" in damag:
+            try:
+                price = damag.split("B")
+                damages_list.append(int(price[0]) * 1000000000)
+            except ValueError:
+                damages_list.append(0)  # or handle the error as needed
         else:
-            damages_list.append(damage)
+            try:
+                damages_list.append(int(damag))
+            except ValueError:
+                damages_list.append(0)  # or handle the error as needed
 
     return damages_list
 
-
-updated_damage_list = updated_damages(damages)
+updated_damaged_list = convert_damages(damages)
 
 
 def combine_name_damage(names):
-    name_damage = {}
+    name_damaged = {}
     i = 0
     for name in names:
-        name_damage[name] = updated_damage_list[i]
+        name_damaged[name] = updated_damaged_list[i]
         i += 1
-    return name_damage
+    return name_damaged
 
 
 names_damages = combine_name_damage(names)
 
-# print(names_damages)
+#print(names_damages)
 
 ################################
 ################################
