@@ -43,34 +43,35 @@ def convert_damages(damages):
                 price = damag.split("M")
                 damages_list.append(int(price[0]) * 1000000)
             except ValueError:
-                damages_list.append(0)  # or handle the error as needed
+                damages_list.append(0)  
         elif "B" in damag:
             try:
                 price = damag.split("B")
                 damages_list.append(int(price[0]) * 1000000000)
             except ValueError:
-                damages_list.append(0)  # or handle the error as needed
+                damages_list.append(0)  
         else:
             try:
                 damages_list.append(int(damag))
             except ValueError:
-                damages_list.append(0)  # or handle the error as needed
+                damages_list.append(0)  
 
     return damages_list
 
 updated_damaged_list = convert_damages(damages)
 
 
-def combine_name_damage(names):
-    name_damaged = {}
+
+def map_names_to_damages(names):
+    names_damages = {}
     i = 0
     for name in names:
-        name_damaged[name] = updated_damaged_list[i]
+        names_damages[name] = updated_damaged_list[i]
         i += 1
-    return name_damaged
+    return names_damages
 
 
-names_damages = combine_name_damage(names)
+names_damages = map_names_to_damages(names)
 
 #print(names_damages)
 
@@ -86,14 +87,15 @@ damage_scale = {0: 0,
 def max_damage(name_damage_dict):
     damage_dict = defaultdict(list)
     for name, damage in name_damage_dict.items():
-        if damage == "Damages not recorded":
+        if damage == 0:
             continue
         temp_list = []
         for k, v in damage_scale.items():
             if damage < v:
                 temp_list.append(k)
-                rating = min(temp_list)
-                damage_dict[rating].append(name)
+        if temp_list:
+            rating = min(temp_list)
+            damage_dict[rating].append(name)
     return damage_dict
 
 
@@ -105,15 +107,27 @@ def max_damage(name_damage_dict):
 # Create a Table
 
 
-def table(hurricanes_name):
+def table(hurricane_names):
+    """
+    Create a dictionary of hurricanes with their details.
+
+    Args:
+    hurricane_names (list): List of hurricane names.
+
+    Returns:
+    dict: Dictionary containing details of each hurricane.
+    """
     hurricanes = {}
-    i = 0
-
-    for name in hurricanes_name:
-        hurricanes[name] = {"Name": names[i], "Month": months[i], "Damage": damages[i], "Year": years[i],
-                            "Max Sustained Wind": max_sustained_winds[i], "Areas Affected": areas_affected[i], "Death": deaths[i]}
-        i += 1
-
+    for name, month, damage, year, wind, areas, death in zip(hurricane_names, months, damages, years, max_sustained_winds, areas_affected, deaths):
+        hurricanes[name] = {
+            "Name": name,
+            "Month": month,
+            "Damage": damage,
+            "Year": year,
+            "Max Sustained Wind": wind,
+            "Areas Affected": areas,
+            "Deaths": death
+        }
     return hurricanes
 
 
